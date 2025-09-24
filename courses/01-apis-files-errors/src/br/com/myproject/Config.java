@@ -17,6 +17,15 @@ public class Config {
     }
 
     public String get(String key) {
-        return properties.getProperty(key);
+        String value = properties.getProperty(key);
+        if(value == null){
+            System.out.println("Key '" + key + "' not found in configuration file.");
+            return null;
+        }
+        if(value.isEmpty()){
+            System.out.println("Setting found with no value for key: " + key + ".");
+            return null;
+        }
+        return value;
     }
 }
