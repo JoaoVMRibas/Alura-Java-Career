@@ -5,8 +5,8 @@ import br.com.myproject.models.AudiovisualContentOmdb;
 import com.google.gson.FieldNamingPolicy;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
-import com.google.gson.JsonSyntaxException;
 
+import java.io.FileWriter;
 import java.io.IOException;
 import java.net.URI;
 import java.net.URLEncoder;
@@ -23,14 +23,13 @@ public class Main {
         List<AudiovisualContent> mediaList = new ArrayList<>();
         String movie = "";
 
-        try(Scanner scanner = new Scanner(System.in);){
+        Gson gson = new GsonBuilder()
+                .setFieldNamingPolicy(FieldNamingPolicy.UPPER_CAMEL_CASE)
+                .setPrettyPrinting()
+                .create();
+
+        try(Scanner scanner = new Scanner(System.in)){
             while(!movie.equalsIgnoreCase("exit")){
-
-                Gson gson = new GsonBuilder()
-                        .setFieldNamingPolicy(FieldNamingPolicy.UPPER_CAMEL_CASE)
-                        .setPrettyPrinting()
-                        .create();
-
                 System.out.println("Enter a movie:");
                 movie = scanner.nextLine();
                 if(movie.equalsIgnoreCase("exit")) break;
@@ -51,16 +50,21 @@ public class Main {
                     AudiovisualContentOmdb contentOmdb = gson.fromJson(json, AudiovisualContentOmdb.class);
                     AudiovisualContent content = new AudiovisualContent(contentOmdb);
                     mediaList.add(content);
-                } catch (IOException | InterruptedException error){
-                    System.out.println("Error sending request.");
-                    System.out.println(error.getMessage());
+
+                } catch (IOException | InterruptedException e){
+                    System.out.println("Exception sending request.");
+                    System.out.println(e.getMessage());
                 } catch (NumberFormatException e){
-                    System.out.println("Error trying to convert a string to a number, string with invalid format.");
+                    System.out.println("Exception trying to convert a string to a number, string with invalid format.");
                     System.out.println(e.getMessage());
                 }
             }
+            try(FileWriter writer = new FileWriter("movies.json")){
+                writer.write(gson.toJson(mediaList));
+            } catch (IOException e) {
+                System.out.println("Exception sending request.");
+                System.out.println(e.getMessage());
+            }
         }
-
-        System.out.println(mediaList);
     }
 }

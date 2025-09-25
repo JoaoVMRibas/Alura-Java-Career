@@ -1,7 +1,5 @@
 package br.com.myproject.models;
 
-import com.google.gson.annotations.SerializedName;
-
 public class AudiovisualContent implements Comparable<AudiovisualContent>{
     private String name;
     private int yearOfRelease;
