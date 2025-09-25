@@ -1,5 +1,7 @@
 package br.com.myproject.models;
 
+import com.google.gson.annotations.SerializedName;
+
 public class AudiovisualContent implements Comparable<AudiovisualContent>{
     private String name;
     private int yearOfRelease;
@@ -13,20 +15,13 @@ public class AudiovisualContent implements Comparable<AudiovisualContent>{
         this.yearOfRelease = yearOfRelease;
     }
 
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public void setYearOfRelease(int yearOfRelease) {
-        this.yearOfRelease = yearOfRelease;
-    }
-
-    public void setIncluded(boolean included) {
-        this.included = included;
-    }
-
-    public void setTotalDurationMinutes(int totalDurationMinutes) {
-        this.totalDurationMinutes = totalDurationMinutes;
+    public AudiovisualContent(AudiovisualContentOmdb contentOmdb) {
+        this.name = contentOmdb.title();
+        if(!contentOmdb.year().equals("N/A")) {this.yearOfRelease = Integer.parseInt(contentOmdb.year().substring(0,4));}
+        if(!contentOmdb.runtime().equals("N/A")){
+            String[] parts = contentOmdb.runtime().split(" ");
+            this.totalDurationMinutes = Integer.parseInt(parts[0]);
+        }
     }
 
     public String getName() {
@@ -37,25 +32,17 @@ public class AudiovisualContent implements Comparable<AudiovisualContent>{
         return this.yearOfRelease;
     }
 
-    public boolean isIncluded() {
-        return this.included;
-    }
-
     public int getTotalDurationMinutes() {
-        return this.totalDurationMinutes;
+        return totalDurationMinutes;
     }
 
-    public int getQuantityOfReviews() {
-        return this.qtOfReviews;
+    public double getAverageRatings() {
+        return sumOfRating/ qtOfReviews;
     }
 
     public void addNewRating(double rating) {
         this.sumOfRating += rating;
         this.qtOfReviews++;
-    }
-
-    public double getAverageRatings() {
-        return sumOfRating/ qtOfReviews;
     }
 
     @Override
